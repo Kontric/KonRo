@@ -1,25 +1,12 @@
 ConRO.Spells = {};
 ConRO.Keybinds = {};
-ConRO.DefSpells = {};
 ConRO.Flags = {};
 ConRO.SpellsGlowing = {};
 ConRO.DefGlowing = {};
 ConRO.DamageFramePool = {};
 ConRO.DamageFrames = {};
-ConRO.DefenseFramePool = {};
-ConRO.DefenseFrames = {};
-ConRO.InterruptFramePool = {};
-ConRO.InterruptFrames = {};
 ConRO.CoolDownFramePool = {};
 ConRO.CoolDownFrames = {};
-ConRO.PurgableFramePool = {};
-ConRO.PurgableFrames = {};
-ConRO.RaidBuffsFramePool = {};
-ConRO.RaidBuffsFrames = {};
-ConRO.MovementFramePool = {};
-ConRO.MovementFrames = {};
-ConRO.TauntFramePool = {};
-ConRO.TauntFrames = {};
 
 local defaults = {
 	["ConRO_Settings_Full"] = true,
