@@ -60,34 +60,6 @@ function ConRO:EnableRotationModule(mode)
 	self.lastSpellId = 0;
 end
 
-function ConRO:EnableDefenseModule(mode)
-	mode = mode or 0;
-	if mode == 0 then
-		self.NextDef = ConRO.Rogue.Under10Def;
-	end;
-	if mode == 1 then
-		if ConRO.db.profile._Spec_1_Enabled then
-			self.NextDef = ConRO.Rogue.AssassinationDef;
-		else
-			self.NextDef = ConRO.Rogue.Disabled;
-		end
-	end;
-	if mode == 2 then
-		if ConRO.db.profile._Spec_2_Enabled then
-			self.NextDef = ConRO.Rogue.OutlawDef;
-		else
-			self.NextDef = ConRO.Rogue.Disabled;
-		end
-	end;
-	if mode == 3 then
-		if ConRO.db.profile._Spec_3_Enabled then
-			self.NextDef = ConRO.Rogue.SubletyDef;
-		else
-			self.NextDef = ConRO.Rogue.Disabled;
-		end
-	end;
-end
-
 function ConRO:UNIT_SPELLCAST_SUCCEEDED(event, unitID, lineID, spellID)
 	if unitID == 'player' then
 		self.lastSpellId = spellID;
@@ -122,50 +94,13 @@ function ConRO.Rogue.Under10(_, timeShift, currentSpell, gcd, tChosen, pvpChosen
 --Abilities
 
 --Conditions
-	local _is_moving 																					= ConRO:PlayerSpeed();
 	local _enemies_in_melee, _target_in_melee															= ConRO:Targets("Melee");
 	local _target_in_10yrds 																			= CheckInteractDistance("target", 3);
 	
 --Warnings
 
 --Rotations	
-
 	
-return nil;
-end
-
-function ConRO.Rogue.Under10Def(_, timeShift, currentSpell, gcd, tChosen, pvpChosen)
---Info
-	local _Player_Level																					= UnitLevel("player");
-	local _Player_Percent_Health 																		= ConRO:PercentHealth('player');
-	local _is_PvP																						= ConRO:IsPvP();
-	local _in_combat 																					= UnitAffectingCombat('player');
-	local _party_size																					= GetNumGroupMembers();
-	
-	local _is_PC																						= UnitPlayerControlled("target");
-	local _is_Enemy 																					= ConRO:TarHostile();
-	local _Target_Health 																				= UnitHealth('target');
-	local _Target_Percent_Health 																		= ConRO:PercentHealth('target');
-
---Resources
-
---Racials
-	local _AncestralCall, _AncestralCall_RDY															= ConRO:AbilityReady(ids.Racial.AncestralCall, timeShift);
-	local _ArcanePulse, _ArcanePulse_RDY																= ConRO:AbilityReady(ids.Racial.ArcanePulse, timeShift);
-	local _Berserking, _Berserking_RDY																	= ConRO:AbilityReady(ids.Racial.Berserking, timeShift);
-	local _ArcaneTorrent, _ArcaneTorrent_RDY															= ConRO:AbilityReady(ids.Racial.ArcaneTorrent, timeShift);
-
---Abilities
-
---Conditions
-	local _is_moving 																					= ConRO:PlayerSpeed();
-	local _enemies_in_melee, _target_in_melee															= ConRO:Targets("Melee");
-	local _target_in_10yrds 																			= CheckInteractDistance("target", 3);
-	
---Warnings
-
---Rotations	
-
 return nil;
 end
 
@@ -433,55 +368,6 @@ function ConRO.Rogue.Assassination(_, timeShift, currentSpell, gcd, tChosen, pvp
 		if _Mutilate_RDY and _Combo <= (_Combo_Max - 1) and ((ConRO_AutoButton:IsVisible() and _enemies_in_melee <= 2) or ConRO_SingleButton:IsVisible()) then
 			return _Mutilate;
 		end
-	end
-return nil;
-end
-
-function ConRO.Rogue.AssassinationDef(_, timeShift, currentSpell, gcd, tChosen, pvpChosen)
---Info
-	local _Player_Level																					= UnitLevel("player");
-	local _Player_Percent_Health 																		= ConRO:PercentHealth('player');
-	local _is_PvP																						= ConRO:IsPvP();
-	local _in_combat 																					= UnitAffectingCombat('player');
-	local _party_size																					= GetNumGroupMembers();
-	
-	local _is_PC																						= UnitPlayerControlled("target");
-	local _is_Enemy 																					= ConRO:TarHostile();
-	local _Target_Health 																				= UnitHealth('target');
-	local _Target_Percent_Health 																		= ConRO:PercentHealth('target');
-	
---Resources
-	local _Energy, _Energy_Max, _Energy_Percent															= ConRO:PlayerPower('Energy');
-	local _Combo, _Combo_Max																			= ConRO:PlayerPower('Combo');
-	
---Abilities	
-	local _Evasion, _Evasion_RDY 																		= ConRO:AbilityReady(ids.Ass_Ability.Evasion, timeShift);
-	local _CrimsonVial, _CrimsonVial_RDY 																= ConRO:AbilityReady(ids.Ass_Ability.CrimsonVial, timeShift);
-
-	local _FleshCraft, _FleshCraft_RDY																	= ConRO:AbilityReady(ids.Covenant_Ability.FleshCraft, timeShift);
-	
---Conditions	
-	local _is_moving 																					= ConRO:PlayerSpeed();
-	local _enemies_in_melee, _target_in_melee															= ConRO:Targets("Melee");
-	local _target_in_10yrds 																			= CheckInteractDistance("target", 3);
-	
-	local _is_stealthed																					= IsStealthed();
-
---Rotations	
-	if _Fleshcraft_RDY and not _in_combat then
-		return _Fleshcraft;
-	end
-	
-	if _CrimsonVial_RDY and _Player_Percent_Health <= 70 then
-		return _CrimsonVial;
-	end
-	
-	if _Evasion_RDY and _in_combat then
-		return _Evasion;
-	end
-
-	if _Fleshcraft_RDY then
-		return _Fleshcraft;
 	end
 return nil;
 end
