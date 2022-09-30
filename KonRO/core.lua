@@ -98,8 +98,6 @@ local defaultOptions = {
 		_Cooldown_Icon_Style = 2,
 		_Cooldown_Alpha_Mode = 2,
 
-		_Notifier_Overlay_Alpha = true,
-		
 		enableWindow = true,
 		combatWindow = false,
 		enableWindowCooldown = true,		
@@ -224,19 +222,6 @@ local options = {
 			set = function(info, val)
 				ConRO.db.profile._Unlock_ConRO = val;
 				ConROWindow:EnableMouse(ConRO.db.profile._Unlock_ConRO);
-				ConRODefenseWindow:EnableMouse(ConRO.db.profile._Unlock_ConRO);
-				ConROInterruptWindow:EnableMouse(ConRO.db.profile._Unlock_ConRO);
-				ConROPurgeWindow:EnableMouse(ConRO.db.profile._Unlock_ConRO);		
-				if val == true and ConRO.db.profile.enableInterruptWindow == true then
-					ConROInterruptWindow:Show();				
-				else
-					ConROInterruptWindow:Hide();				
-				end	
-				if val == true and ConRO.db.profile.enablePurgeWindow == true then
-					ConROPurgeWindow:Show();					
-				else
-					ConROPurgeWindow:Hide();					
-				end			
 			end,
 			get = function(info) return ConRO.db.profile._Unlock_ConRO end
 		},
@@ -257,10 +242,8 @@ local options = {
 						ConRO.db.profile._Spec_1_Enabled = val;
 						
 						ConRO:DisableRotation();
-						ConRO:DisableDefense();
 						ConRO:LoadModule();
 						ConRO:EnableRotation();
-						ConRO:EnableDefense();
 						
 						if ConRO:HealSpec() then
 							ConROWindow:Hide();
@@ -269,6 +252,8 @@ local options = {
 						else
 							ConROWindow:Hide();	
 						end
+
+						
 					end,
 					get = function(info) return ConRO.db.profile._Spec_1_Enabled end
 				},
@@ -282,10 +267,8 @@ local options = {
 						ConRO.db.profile._Spec_2_Enabled = val;
 						
 						ConRO:DisableRotation();
-						ConRO:DisableDefense();
 						ConRO:LoadModule();
 						ConRO:EnableRotation();
-						ConRO:EnableDefense();
 						
 						if ConRO:HealSpec() then
 							ConROWindow:Hide();
@@ -308,10 +291,8 @@ local options = {
 						ConRO.db.profile._Spec_3_Enabled = val;
 						
 						ConRO:DisableRotation();
-						ConRO:DisableDefense();
 						ConRO:LoadModule();
 						ConRO:EnableRotation();
-						ConRO:EnableDefense();
 						
 						if ConRO:HealSpec() then
 							ConROWindow:Hide();
@@ -334,10 +315,8 @@ local options = {
 						ConRO.db.profile._Spec_4_Enabled = val;
 						
 						ConRO:DisableRotation();
-						ConRO:DisableDefense();
 						ConRO:LoadModule();
 						ConRO:EnableRotation();
-						ConRO:EnableDefense();
 						
 						if ConRO:HealSpec() then
 							ConROWindow:Hide();
@@ -388,36 +367,6 @@ local options = {
 					end,
 					get = function(info) return ConRO.db.profile._Damage_Overlay_Alpha end
 				},				
-				_Notifier_Overlay_Alpha = {
-					name = 'Show Notifier Overlay',
-					desc = 'Turn interrupt, raid buff and purge overlays on and off.',
-					type = 'toggle',
-					width = 'default',
-					order = 5,
-					set = function(info, val)
-						ConRO.db.profile._Notifier_Overlay_Alpha = val;
-						if ConRO.db.profile._Notifier_Overlay_Alpha then
-							local _Frame_Tables_ConRO = {ConRO.InterruptFrames, ConRO.PurgableFrames, ConRO.RaidBuffsFrames, ConRO.MovementFrames};
-							for _, frameTable in pairs(_Frame_Tables_ConRO) do
-								for k, overlay in pairs(frameTable) do
-									if overlay ~= nil then
-										overlay:SetAlpha(1);
-									end
-								end
-							end
-						else
-							local _Frame_Tables_ConRO = {ConRO.InterruptFrames, ConRO.PurgableFrames, ConRO.RaidBuffsFrames, ConRO.MovementFrames};
-							for _, frameTable in pairs(_Frame_Tables_ConRO) do
-								for k, overlay in pairs(frameTable) do
-									if overlay ~= nil then
-										overlay:SetAlpha(0);
-									end
-								end
-							end
-						end
-					end,
-					get = function(info) return ConRO.db.profile._Notifier_Overlay_Alpha end
-				},
 				_Damage_Spacer = {
 					type = "description",
 					width = "full",
@@ -745,17 +694,6 @@ local options = {
 					end,
 					get = function(info) return ConRO.db.profile._Cooldown_Alpha_Mode end
 				},
-				_Notifier_Spacer = {
-					type = "description",
-					width = "full",
-					name = "\n\n",
-					order = 50,
-				},
-				_Notifier_Overlays = {
-					type = "header",
-					name = "Notifier Overlays",
-					order = 51,
-				},
 			},
 		},
 
@@ -791,10 +729,8 @@ local options = {
 						ConRO.db.profile.combatWindow = val;
 						if val == true then
 							ConROWindow:Hide();
-							ConRODefenseWindow:Hide();
 						else
 							ConROWindow:Show();
-							ConRODefenseWindow:Show();				
 						end
 					end,
 					get = function(info) return ConRO.db.profile.combatWindow end
@@ -810,22 +746,6 @@ local options = {
 					end,
 					get = function(info) return ConRO.db.profile.enableWindowCooldown end
 				},
-				enableDefenseWindow = {
-					name = 'Enable Defense Window',
-					desc = 'Show movable defense window.',
-					type = 'toggle',
-					width = 'default',
-					order = 76,
-					set = function(info, val)
-						ConRO.db.profile.enableDefenseWindow = val;
-						if val == true then
-							ConRODefenseWindow:Show();
-						else
-							ConRODefenseWindow:Hide();
-						end				
-					end,
-					get = function(info) return ConRO.db.profile.enableDefenseWindow end
-				},		
 				enableWindowSpellName = {
 					name = 'Show Spellname',
 					desc = 'Show spellname above Display Windows.',
@@ -836,10 +756,8 @@ local options = {
 						ConRO.db.profile.enableWindowSpellName = val;
 						if val == true then
 							ConROWindow.font:Show();
-							ConRODefenseWindow.font:Show();
 						else 
 							ConROWindow.font:Hide();
-							ConRODefenseWindow.font:Hide();
 						end
 					end,
 					get = function(info) return ConRO.db.profile.enableWindowSpellName end
@@ -854,10 +772,8 @@ local options = {
 						ConRO.db.profile.enableWindowKeybinds = val;
 						if val == true then
 							ConROWindow.fontkey:Show();
-							ConRODefenseWindow.fontkey:Show();
 						else 
 							ConROWindow.fontkey:Hide();
-							ConRODefenseWindow.fontkey:Hide();
 						end
 					end,
 					get = function(info) return ConRO.db.profile.enableWindowKeybinds end
@@ -889,54 +805,6 @@ local options = {
 						ConRO.db.profile.windowIconSize = val;
 					end,
 					get = function(info) return ConRO.db.profile.windowIconSize end
-				},
-				flashIconSize = {
-					name = 'Flasher Icon size.',
-					desc = 'Sets the size of the icon that flashes for Interrupts and Purges.',
-					type = 'range',
-					width = 'normal',
-					order = 81,
-					min = 20,
-					max = 100,
-					step = 2,
-					set = function(info, val)
-						ConRO.db.profile.flashIconSize = val;
-						ConROInterruptWindow:SetSize(ConRO.db.profile.flashIconSize * .25, ConRO.db.profile.flashIconSize * .25);
-						ConROPurgeWindow:SetSize(ConRO.db.profile.flashIconSize * .25, ConRO.db.profile.flashIconSize * .25);
-					end,
-					get = function(info) return ConRO.db.profile.flashIconSize end
-				},
-				enableInterruptWindow = {
-					name = 'Enable Interrupt Icon',
-					desc = 'Show movable interrupt icon.',
-					type = 'toggle',
-					width = 'default',
-					order = 82,			
-					set = function(info, val)
-						ConRO.db.profile.enableInterruptWindow = val;			
-						if val == true and ConRO.db.profile._Unlock_ConRO == true then
-							ConROInterruptWindow:Show();				
-						else
-							ConROInterruptWindow:Hide();
-						end	
-					end,
-					get = function(info) return ConRO.db.profile.enableInterruptWindow end
-				},
-				enablePurgeWindow = {
-					name = 'Enable Purge Icon',
-					desc = 'Show movable purge icon.',
-					type = 'toggle',
-					width = 'default',
-					order = 83,		
-					set = function(info, val)
-						ConRO.db.profile.enablePurgeWindow = val;			
-						if val == true and ConRO.db.profile._Unlock_ConRO == true then
-							ConROPurgeWindow:Show();
-						else
-							ConROPurgeWindow:Hide();
-						end	
-					end,
-					get = function(info) return ConRO.db.profile.enablePurgeWindow end
 				},
 				spacer84 = {
 					order = 84,
@@ -1057,9 +925,6 @@ local options = {
 			func = function(info)
 				ConROButtonFrame:SetUserPlaced(false);
 				ConROWindow:SetUserPlaced(false);
-				ConRODefenseWindow:SetUserPlaced(false);
-				ConROInterruptWindow:SetUserPlaced(false);
-				ConROPurgeWindow:SetUserPlaced(false);
 				ReloadUI();
 			end
 		},
@@ -1199,10 +1064,8 @@ function ConRO:ACTIONBAR_HIDEGRID()
 	if self.rotationEnabled then
 		if self.fetchTimer then
 			self:CancelTimer(self.fetchTimer);
-			self:CancelTimer(self.fetchdefTimer);
 		end
 		self.fetchTimer = self:ScheduleTimer('Fetch', 0.5);
-		self.fetchdefTimer = self:ScheduleTimer('FetchDef', 0.5);
 	end
 
 	self:DestroyCoolDownOverlays();
@@ -1303,10 +1166,8 @@ function ConRO:ButtonFetch()
 	if self.rotationEnabled then
 		if self.fetchTimer then
 			self:CancelTimer(self.fetchTimer);
-			self:CancelTimer(self.fetchdefTimer);
 		end
 		self.fetchTimer = self:ScheduleTimer('Fetch', 0.5);
-		self.fetchdefTimer = self:ScheduleTimer('FetchDef', 0.5);
 	end
 end
 
