@@ -453,6 +453,18 @@ function ConRO:AbilityReady(spellid, timeShift, spelltype)
 	return spellid, rdy, _CD, _MaxCD, castTime;
 end
 
+function ConRO:ItemReady(_Item_ID, timeShift)
+	local _CD, _MaxCD = ConRO:ItemCooldown(_Item_ID, timeShift);
+	local _Item_COUNT = GetItemCount(_Item_ID, false, true);
+	local _RDY = false;
+		if _CD <= 0 and _Item_COUNT >= 1 then
+			_RDY = true;
+		else
+			_RDY = false;
+		end
+	return _Item_ID, _RDY, _CD, _MaxCD, _Item_COUNT;
+end
+
 function ConRO:SpellCharges(spellid)
 	local currentCharges, maxCharges, cooldownStart, maxCooldown = GetSpellCharges(spellid);
 	local currentCooldown = 10000;
@@ -515,6 +527,23 @@ function ConRO:Cooldown(spellid, timeShift)
 
 	if baseCooldownMS ~= nil then
 		baseCooldown = (baseCooldownMS/1000) + timeShift;
+	end
+	
+	if enabled and maxCooldown == 0 and start == 0 then
+		return 0, maxCooldown, baseCooldown;
+	elseif enabled then
+		return (maxCooldown - (GetTime() - start) - (timeShift or 0)), maxCooldown, baseCooldown;
+	else
+		return 100000, maxCooldown, baseCooldown;
+	end;
+end
+
+function ConRO:ItemCooldown(itemid, timeShift)
+	local start, maxCooldown, enabled = GetItemCooldown(itemid);
+	local baseCooldownMS, gcdMS = GetSpellBaseCooldown(itemid);
+	
+	if baseCooldownMS ~= nil then
+		baseCooldown = baseCooldownMS/1000;
 	end
 	
 	if enabled and maxCooldown == 0 and start == 0 then

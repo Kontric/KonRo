@@ -169,7 +169,7 @@ local options = {
 			order = 3,
 			type = "description",
 			width = "normal",
-			name = "Author: Vae",
+			name = "Author: Kontric and Ruuj",
 		},
 		cversionPull = {
 			order = 4,
